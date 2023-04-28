@@ -186,12 +186,25 @@ class _HomeWidgetState extends State<HomeWidget> {
                 padding: const EdgeInsets.all(15),
                 child: Column(
                   children: [
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: TextButton(
-                        child: const Text("Clear"),
-                        onPressed: () => _platform.invokeMethod('clearClients'),
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: TextButton(
+                            child: const Text("Clear"),
+                            onPressed: () =>
+                                _platform.invokeMethod('clearClients'),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: TextButton(
+                            child: const Text("Add By IP"),
+                            onPressed: () => _displayTextInputDialog(context),
+                          ),
+                        ),
+                      ],
                     ),
                     Expanded(
                         child: ListView(
@@ -215,6 +228,38 @@ class _HomeWidgetState extends State<HomeWidget> {
             )
           ],
         ));
+  }
+
+  TextEditingController _textFieldController = TextEditingController();
+
+  Future<void> _displayTextInputDialog(BuildContext context) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('EFB IP Address'),
+          content: TextField(
+            controller: _textFieldController,
+            decoration: const InputDecoration(hintText: "EFB IP Address"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('CANCEL'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                _platform.invokeMethod('addClient');
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 

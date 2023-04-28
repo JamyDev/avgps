@@ -23,6 +23,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.net.InetSocketAddress
+import java.net.InetAddress
 
 class MainActivity : FlutterActivity() {
     private val METHOD_CHANNEL = "avgps.youmu.moe/rpc"
@@ -80,6 +81,11 @@ class MainActivity : FlutterActivity() {
                     result.success(Json.encodeToString(locationService?.lastLocation))
                 "getClients" ->
                     result.success(Json.encodeToString(locationService?.clientList ?: listOf()))
+                "addClient" -> {
+                    val data: EFBDiscoveryMessage = EFBDiscoveryMessage("Foreflight", EFBDiscoveryMessage.PortInfo(4000))
+                    locationService?.onEFBDiscovery(InetAddress.getByName("192.168.1.221"), data)
+                    result.success(null)
+                }
                 "clearClients" -> {
                     locationService?.clearEFB()
                     result.success(null)
